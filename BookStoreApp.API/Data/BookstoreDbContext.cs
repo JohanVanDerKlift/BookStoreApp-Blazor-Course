@@ -15,9 +15,9 @@ public partial class BookstoreDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Author> Authors { get; set; }
+    public virtual DbSet<Author> Authors { get; set; } = null!;
 
-    public virtual DbSet<Book> Books { get; set; }
+    public virtual DbSet<Book> Books { get; set; } = null!;
 
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -44,6 +44,11 @@ public partial class BookstoreDbContext : DbContext
             entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.Summary).HasMaxLength(250);
             entity.Property(e => e.Title).HasMaxLength(50);
+
+            entity.HasOne(d => d.Author)
+                    .WithMany(p => p.Books)
+                    .HasForeignKey(d => d.AuthorId)
+                    .HasConstraintName("FK_Books_ToTable");
         });
 
         OnModelCreatingPartial(modelBuilder);
